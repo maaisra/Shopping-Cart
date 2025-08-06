@@ -24,11 +24,33 @@ public class ShoppingCart {
     }
 
     public void addItem(String producID, int quantity){
-        
+        //ตรวจสอบ quantity ที่ถูกต้อง
+        if (quantity < 0) {
+            throw new RuntimeException("Rep invariant violated!");
+        }
+
+        //ใช้ ProductCatalog เพื่อค้นหา Product
+        Product product = productCatalog.findByID(producID);
+        if (product != null && quantity > 0) {
+            for (CartItem cartItem : cartItems) {
+                if (cartItem.getProduct().equals(producID)) {
+                    cartItem.increaseQuantity(quantity);
+                }
+            }
+        } else cartItems.add(new CartItem(product, quantity));
+        CheckRep();
     }
 
     public void removeItem(String productID){
-        
+        Product product = productCatalog.findByID(productID);
+        if (product != null) {
+            for (CartItem cartItem : cartItems) {
+                if (cartItem.getProduct().equals(productID)) {
+                    cartItems.remove(product);
+                }
+            }
+        }
+        CheckRep();
     }
 
     public double getTotalPrice(){
